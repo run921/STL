@@ -15,7 +15,7 @@ int main()
     cout << count_if(v.begin(), v.end(), not1(bind2nd(less<int>(), 40))) << endl;   //not1为否定，内部表示小于40
     //bind2ed绑定第二参数
     //count_if是标准算法
-
+    //test
 
     system("pause");
     return EXIT_SUCCESS;
