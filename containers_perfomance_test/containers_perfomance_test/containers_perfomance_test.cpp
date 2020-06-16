@@ -346,6 +346,262 @@ namespace jj18
 }
 
 
+//multiset性能测试（红黑树实现，multi关键字表示key可以重复）
+#include<set>
+namespace jj06
+{
+    void test_multiset(long &value)
+    {
+        cout << "\ntest_multiset()..................\n";
+        multiset<string> c;
+        char buf[10];
+        clock_t timeStart = clock();
+        for (long i = 0; i < value; ++i)
+        {
+            try
+            {
+                snprintf(buf, 10, "%d", rand());
+                c.insert(string(buf));
+            }
+            catch (exception& p){
+                cout << "i=" << i << " " << p.what() << endl;
+                abort();
+            }
+        }
+        cout << "milli-seconds:" << (clock() - timeStart) << endl;
+        cout << "multiset.size()=" << c.size() << endl;
+        cout << "multiset.max_size()=" << c.max_size() << endl;
+
+        string target = get_a_target_string();
+        {
+            timeStart = clock();
+            auto pItem = ::find(c.begin(), c.end(), target);        //比c.find()慢很多
+            cout << "::find(),milli-seconds:" << (clock() - timeStart) << endl;
+            if (pItem != c.end())
+                cout << "found," << *pItem << endl;
+            else
+                cout << "not found!" << endl;
+        }
+        {
+            timeStart = clock();
+            auto pItem = c.find(target);        //比::find()快很多
+            cout << "c.find(),milli-seconds:" << (clock() - timeStart) << endl;
+            if (pItem != c.end())
+                cout << "found," << *pItem << endl;
+            else
+                cout << "not found!" << endl;
+        }
+    }
+}
+
+//multimap性能测试（红黑树）    
+#include <utility>
+#include<map>
+namespace jj07
+{
+    void test_map(long& value)
+    {
+        cout << "\ntest_multimap()..................\n";
+        multimap<long,string> c;
+        char buf[10];
+        clock_t timeStart = clock();
+        for (long i = 0; i < value; ++i)
+        {
+            try
+            {
+                snprintf(buf, 10, "%d", rand());
+                //multimap不能用[]insertion
+                c.insert(pair<long,string>(i,buf));
+            }
+            catch (exception & p)
+            {
+                cout << "i=" << i << " " << p.what() << endl;
+                abort();
+            }
+    }
+    cout << "milli-seconds:" << (clock() - timeStart) << endl;
+    cout << "multimap.size()=" << c.size() << endl;
+    cout << "multimap.max_size()=" << c.max_size() << endl;
+
+    string target = get_a_target_string();
+    {
+        timeStart = clock();
+        auto pItem = ::find(c.begin(), c.end(), target);        //比c.find()慢很多
+        cout << "::find(),milli-seconds:" << (clock() - timeStart) << endl;
+        if (pItem != c.end())
+            cout << "found," << *pItem << endl;
+        else
+            cout << "not found!" << endl;
+    }
+    {
+        timeStart = clock();
+        auto pItem = c.find(target);        //比::find()快很多
+        cout << "c.find(),milli-seconds:" << (clock() - timeStart) << endl;
+        if (pItem != c.end())
+            cout << "found," << (*pItem).second << endl;
+        else
+            cout << "not found!" << endl;
+    }
+}
+}
+
+
+//unordered_multimap性能测试(hashtable)
+#include<unordered_set>
+namespace jj08
+{
+    void test_unordered_multimap(long& value)
+    {
+        cout << "\ntest_unordered_multimap()............";
+        unordered_multimap<string> c;
+        char buf[10];
+        clock_t timeStart = clock();
+        for (long i = 0; i < value; ++i)
+        {
+            try
+            {
+                snprintf(buf, 10, "%d", buf);
+                c.insert(string(buf));
+            }
+            catch (exception& p)
+            {
+                cout << "i=" << i << " " << p.what() << endl;
+                abort();
+            }
+        }
+        cout << "milli-seconds:" << (clock() - timeStart) << endl;
+        cout << "unordered_multimap.size()=" << c.size() << endl;
+        cout << "unordered_multimap.max_size()=" << c.max_size() << endl;
+        cout << "unordered_multimap.bucket_count()=" << c.bucket_count() << endl;
+        cout << "unordered_multimap.load_factor()=" << c.load_factor() << endl;
+        cout << "unordered_multimap.max_load_factor()=" << c.max_load_factor() << endl;
+        cout << "unordered_multimap.max_bucket_count()=" << c.max_bucket_count() << endl;
+        for (unsigned i = 0; i < 20; ++i)
+        {
+            cout << "bucket #" << i << " has " << c.bucket_size(i) << " elements.\n";
+        }
+
+        string target = get_a_target_string();
+        {
+            timeStart = clock();
+            auto pItem = ::find(c.begin, c.end(), target);      //比c.find()慢很多
+            cout << "::find(),milli-second:" << timeStart - clock() << endl;
+            if (pItem != c.end())
+                cout << "found," << *pItem << endl;
+            else
+                cout << "not found!" << endl;
+        }
+        {
+            timeStart = clock();
+            auto pItem = c.find(c.begin, c.end(), target);      //比c.find()慢很多
+            cout << "c.find(),milli-second:" << timeStart - clock() << endl;
+            if (pItem != c.end())
+                cout << "found," << *pItem << endl;
+            else
+                cout << "not found!" << endl;
+        }
+
+    }
+}
+
+//unordered_multimap性能测试(hashtable)
+#include<unordered_map>
+namespace jj09
+{
+    void test_unordered_multimap(long& value)
+    {
+        cout << "\ntest_unordered_multimap()............";
+        unordered_multimap<long,string> c;
+        char buf[10];
+        clock_t timeStart = clock();
+        for (long i = 0; i < value; ++i)
+        {
+            try
+            {
+                snprintf(buf, 10, "%d", buf);
+                c.insert(pair<long,string>(i,buf));
+            }
+            catch (exception & p)
+            {
+                cout << "i=" << i << " " << p.what() << endl;
+                abort();
+            }
+        }
+        cout << "milli-seconds:" << (clock() - timeStart) << endl;
+        cout << "unordered_multimap.size()=" << c.size() << endl;
+        cout << "unordered_multimap.max_size()=" << c.max_size() << endl;
+       
+        for (unsigned i = 0; i < 20; ++i)
+        {
+            cout << "bucket #" << i << " has " << c.bucket_size(i) << " elements.\n";
+        }
+
+        string target = get_a_target_string();
+        {
+            timeStart = clock();
+            auto pItem = c.find(c.begin, c.end(), target);      //比c.find()慢很多
+            cout << "c.find(),milli-second:" << timeStart - clock() << endl;
+            if (pItem != c.end())
+                cout << "found," << (*pItem).second() << endl;
+            else
+                cout << "not found!" << endl;
+        }
+
+    }
+}
+//set
+namespace jj13
+{
+    void test_set(long& value)
+    {
+        cout << "\ntest_set().............\n";
+
+        set<string> c;
+        char buf[10];
+
+        clock_t timeStart = clock();
+        for (long i = 0; i < value; ++i)
+        {
+            try
+            {
+                snprintf(buf, 10, "%d", rand());
+                c.insert(string(buf));
+            }
+            catch (exception& p)
+            {
+                cout << "i=" << i << " " << p.what() << endl;
+                abort();
+            }
+        }
+        cout << "milli-second:" << (clock() - timeStart) << endl;
+        cout << "set.size()=" << c.size() << endl;
+        cout << "set.max_size()" << c.max_size() << endl;
+
+        string target = get_a_target_string();
+        
+        {
+            timeStart = clock();
+            auto pItem = ::find(c.begin(), c.end(), target);    //比c.find()慢很多
+            cout << "::find(),milli-seconds:" << (clock() - timeStart) << endl;
+            if (pItem != c.end())
+                cout << "found, " << *pItem << endl;
+            else
+                cout << "not found!" <<endl;
+        }
+
+        {
+            timeStart = clock();
+            auto pItem = c.find(target);
+            cout << "c.find(),milli-seconds:" << (clock() - timeStart) << endl;
+            if (pItem != c.end())
+                cout << "found, " << *pItem << endl;
+            else
+                cout << "not found!" << endl;
+        }
+    }
+}
+
+
 int main()
 {
 
